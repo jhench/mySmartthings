@@ -42,7 +42,7 @@ preferences {
     	input "Delta", "number", title: "Temperature Delta", required: true
     	input "MinimumTemp", "number", title: "Inside Minimum Temp", required: true
 //        input "MaxTemp", "number", title: "Always Run If Hotter Than", required: true
-        input "Override", "bool", default: false, title: "Override smartapp control?" //Override should kick out of the initialize function before the subscriptions    
+        input "userOverride", "bool", default: false, title: "Override smartapp control?" //Override should kick out of the initialize function before the subscriptions    
     }
     section ("Time Constraints") {
     	input "TimeOff","time", title: "Turn off at:", required: false
@@ -67,7 +67,7 @@ def initialize() {
     if ("on"==ThisSwitch.currentswitch){
     	state.fanRunning = true;
     }
-	if (Override=="true") {
+	if (userOverride == true) {
     	log.debug "Exiting Smartapp due to user override"
         return
     }
