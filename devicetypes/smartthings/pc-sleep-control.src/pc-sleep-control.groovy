@@ -15,7 +15,7 @@ metadata {
 	definition (name: "PC Sleep Control", namespace: "smartthings", author: "jhench") {
 		capability "Actuator"
 		capability "Button"
-		capability "Sensor"
+        capability "Momentary"
         
         command "sleep"
         command "wake"
@@ -44,7 +44,7 @@ def parse(String description) {
 }
 
 def sleep() {
-//	sendEvent(name: "button", value: "sleep", data: [buttonNumber: "1"], descriptionText: "$device.displayName Sleep button was pushed", isStateChange: true)
+
 //Manual Eventghost call
 	def egHost = "192.168.0.42:78"
 	def egRawCommand = "ST.PCPower.Sleep"
@@ -52,15 +52,17 @@ def sleep() {
 	log.debug "processed sleep button from device $device.label"
 	log.debug "egRestCommand:  $egRestCommand"
 	sendHubCommand(new physicalgraph.device.HubAction("""GET /?$egRestCommand HTTP/1.1\r\nHOST: $egHost\r\n\r\n""", physicalgraph.device.Protocol.LAN))
-
+    sendEvent(name: "button", value: "sleep", descriptionText: "$device.displayName Sleep button was pushed", isStateChange: true)
 } 
 
 def wake() {
+    sendEvent(name: "button", value: "wake", descriptionText: "$device.displayName Wake button was pushed", isStateChange: true)
     def result = new physicalgraph.device.HubAction (
         "wake on lan 90E6BA82C48D",
         physicalgraph.device.Protocol.LAN,
         null,
         [secureCode: "111122223333"]
     )
+    log.debug "wake command sent to PC"
     return result
 }
